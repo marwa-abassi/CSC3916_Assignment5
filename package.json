@@ -1,0 +1,12 @@
+{
+  "name": "csc3916-assignment5",
+  "private": true,
+  "description": "Monorepo-style layout: api (Express) + client (CRA) for CSC3916 Assignment 5",
+  "scripts": {
+    "install:all": "npm install --prefix api && npm install --prefix client",
+    "start:api": "npm start --prefix api",
+    "start:client": "npm start --prefix client",
+    "build:client": "npm run build --prefix client",
+    "test:api": "npm test --prefix api"
+  }
+}

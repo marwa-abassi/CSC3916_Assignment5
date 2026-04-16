@@ -1,39 +1,103 @@
 # Assignment Five
+
 ## Purpose
 
-The purpose of this assignment is to create a React Single Page App over your developed API.  The interface will allow the users to search for movies, display information about the movie, see stored ratings, and allow the user to enter a rating.
+Build a React single-page application that talks to your movie + reviews API: browse top-rated movies, open a detail view (image, actors, average rating, review grid), sign up / log in, and submit reviews tied to the JWT user.
 
-## Pre-Requirements
-- Assignment 3 deployed REACT app that supports SignUp and Logon
-- Assignment 4 that supports reviews
+## Repository layout
 
-## Requirements
-- Update your API to support storing an image (or image URL) for the movies you have stored.  You will use the image URL in your React application to show the image of movies
-    - New Attribute on the movie collection
-- For this assignment all your endpoints should be protected by JWT authentication
-- Implement the following interfaces
-    - User SignUp and User Logon
-        - Leverage your User mongoDB collection to store new users of the application
-    - Main screen should show the top rated movies (show at least 5)
-        - Your GET /movies endpoint should sort by rating (server side)
-            - Update your /movies (with reviews=true) endpoint to sort by average rating descending
-    - Movie Detail screen, shows the Movie, Image, Actors that were in the movie, aggregated rating for the movie and grid that shows the reviews (username, rating, review)
-    - Extra Credit: (7 points) - chapter 25 of (https://www.amazon.com/dp/B0979MGJ5J?_encoding=UTF8&psc=1&ref_=cm_sw_r_cp_ud_dp_M9YGPJNZWB3BK0P59QX3) Movie Search – show results in a grid, accordion or other list control
-        - Add Search API (HTTP POST) to the API that can take partial movie names or partial actor names
+Everything for this assignment lives in **one repo** with two apps side by side:
 
-## Submissions
-- User is able to Sign-up (name, username, password)
-- User is able to Logon to the application (username, password)
-- User is able to see list of movies and select a movie to see the detail screen (top rated movies displayed)
-- User is able to enter a review on the detail page (enter a rating and comment) – the logged in user’s username will be associated with the review (as captured from the JSON Web Token)
+| Folder | What it is |
+|--------|------------|
+| **`api/`** | Node / Express / Mongo API (JWT, movies, reviews, search). Former HW4 project. |
+| **`client/`** | Create React App (signup, login, movie list, detail, review form). Former Assignment 3 React app. |
 
-## Rubic
-- -3 Not able to add comments
-- -2 Not aggregating rating (average rating)
-- -3 if not pointed to correct end point (e.g Hw4 endpoint)
-- -5 if you don’t have a react web site deployed 
+Run and deploy each folder independently (`api` on Render/Heroku/etc., `client` on Netlify/Vercel/etc.).
+
+## Pre-requirements
+
+- MongoDB connection string
+- Node.js LTS
+
+## Local setup
+
+### 1. API (`api/`)
+
+```bash
+cd api
+npm install
+```
+
+Create **`api/.env`** (do not commit):
+
+- `MONGO_URI` or `DB` — Mongo connection string  
+- `SECRET_KEY` — string used to sign JWTs  
+- `PORT` — optional (defaults to `8080`)
+
+Seed sample movies + reviews (optional):
+
+```bash
+npm run seed
+```
+
+Start the API:
+
+```bash
+npm start
+```
+
+### 2. React client (`client/`)
+
+```bash
+cd client
+npm install
+```
+
+Create **`client/.env`**:
+
+```bash
+REACT_APP_API_URL=http://localhost:8080
+```
+
+Use your **deployed** API URL for production builds (no trailing slash), for example:
+
+```bash
+REACT_APP_API_URL=https://your-api.onrender.com
+```
+
+Start the app:
+
+```bash
+npm start
+```
+
+Open the URL shown in the terminal (usually [http://localhost:3000](http://localhost:3000)). This project uses **HashRouter** (`/#/...` URLs), which works well on static hosts.
+
+## Requirements checklist (course)
+
+- Movie documents support an **`imageUrl`** field; UI shows posters when present.
+- Data routes use **JWT** (`Authorization: JWT <token>` from sign-in). Sign-up and sign-in stay public so users can obtain a token.
+- **Sign up** (name, username, password) and **log in** (username, password) against your User collection.
+- **Main screen**: at least five movies when seeded; **`GET /movies`** sorts by **average rating on the server** (see `api/server.js`). Use **`GET /movies?reviews=true`** from the client to include review data for the carousel.
+- **Detail screen**: title, image, actors, **average rating** from aggregation, **grid** of reviews (username, rating, text).
+- **Submit review** on the detail page; **username** on the review comes from the **JWT** on the server.
+- **Extra credit**: **`POST /movies/search`** with partial title / actor match; client shows results in a **grid**.
+
+## Deployment
+
+1. Deploy **`api/`** and set `MONGO_URI`, `SECRET_KEY`, and `PORT` on the host.  
+2. Enable **CORS** for your deployed client origin if needed.  
+3. Deploy **`client/`** (build output or static site). Set **`REACT_APP_API_URL`** in the host’s environment to your **live API base URL** so the grader hits the correct endpoint.
+
+## Rubric reminders
+
+- Comments on reviews must save correctly.
+- Average rating must come from **aggregation**, not only client-side math.
+- Point the React **`REACT_APP_API_URL`** at the correct deployed API.
+- React app must be **deployed** for full credit.
 
 ## Resources
-- https://github.com/facebook/create-react-app
-- https://github.com/mars/create-react-app-buildpack#user-content-requires
 
+- [Create React App](https://github.com/facebook/create-react-app)  
+- [Heroku CRA buildpack (legacy reference)](https://github.com/mars/create-react-app-buildpack#user-content-requires)
