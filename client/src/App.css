@@ -88,6 +88,38 @@
   margin-right: auto;
 }
 
+/* Main movie list: dark shell so text-light labels and captions stay readable */
+.movie-list-page {
+  background-color: #121212;
+  color: #f8f9fa;
+  min-height: calc(100vh - 56px);
+}
+
+/* Carousel: avoid Bootstrap caption overlay + thumbnail white strip fighting the dark theme */
+.movie-carousel .carousel-inner {
+  min-height: 420px;
+}
+
+.movie-carousel .carousel-item {
+  padding-bottom: 2rem;
+}
+
+.movie-carousel-poster {
+  max-height: min(55vh, 380px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 0.35rem;
+}
+
+.movie-carousel-meta {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(33, 37, 41, 0.95);
+  border-radius: 0.35rem;
+  display: inline-block;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

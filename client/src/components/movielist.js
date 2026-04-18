@@ -2,8 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovies, setMovie, searchMovies } from "../actions/movieActions";
 import { Link } from 'react-router-dom';
-import { Image, Nav, Carousel, Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Carousel, Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { BsStarFill } from 'react-icons/bs';
+
+/** Wikimedia and other CDNs sometimes fail when hot-linked; avoid broken-icon layout */
+const POSTER_FALLBACK =
+  'https://placehold.co/400x600/343a40/adb5bd/png?text=Poster+unavailable';
 
 function MovieList() {
     const dispatch = useDispatch();
@@ -58,7 +62,7 @@ function MovieList() {
 
     if (searchResults !== null) {
         return (
-            <div className="p-3">
+            <div className="movie-list-page p-3 pb-5">
                 <Form className="mb-3 d-flex flex-wrap gap-2 align-items-end" onSubmit={runSearch}>
                     <Form.Group>
                         <Form.Label className="text-light">Search movies / actors</Form.Label>
@@ -76,9 +80,20 @@ function MovieList() {
                     {searchResults.map((movie) => (
                         <Col key={movie._id}>
                             <Card className="h-100 bg-dark text-light">
-                                {movie.imageUrl
-                                    ? <Card.Img variant="top" src={movie.imageUrl} referrerPolicy="no-referrer" style={{ objectFit: 'cover', maxHeight: '220px' }} />
-                                    : <div className="bg-secondary p-5 text-center">No image</div>}
+                                {movie.imageUrl ? (
+                                    <Card.Img
+                                        variant="top"
+                                        src={movie.imageUrl}
+                                        referrerPolicy="no-referrer"
+                                        style={{ objectFit: 'cover', maxHeight: '220px' }}
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = POSTER_FALLBACK;
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="bg-secondary p-5 text-center">No image</div>
+                                )}
                                 <Card.Body>
                                     <Card.Title>{movie.title}</Card.Title>
                                     <Card.Text className="small">{movie.releaseDate} · {movie.genre}</Card.Text>
@@ -96,7 +111,7 @@ function MovieList() {
     }
 
     return (
-        <div className="p-3">
+        <div className="movie-list-page p-3 pb-5">
             <Form className="mb-3 d-flex flex-wrap gap-2 align-items-end" onSubmit={runSearch}>
                 <Form.Group>
                     <Form.Label className="text-light">Search movies / actors</Form.Label>
@@ -108,20 +123,55 @@ function MovieList() {
                 </Form.Group>
                 <Button type="submit" variant="primary">Search</Button>
             </Form>
-            <Carousel onSelect={handleSelect} className="bg-dark text-light p-4 rounded">
+            <Carousel
+                interval={5000}
+                indicators
+                onSelect={handleSelect}
+                className="movie-carousel bg-dark border border-secondary rounded p-3"
+            >
                 {memoizedMovies.map((movie) => (
                     <Carousel.Item key={movie._id || movie.title}>
-                        <Nav.Link
-                            as={Link}
-                            to={`/movie/${movie._id}`}
-                            onClick={() => handleClick(movie)}
-                        >
-                            {movie.imageUrl ? <Image className="image" src={movie.imageUrl} referrerPolicy="no-referrer" thumbnail alt={movie.title || 'Movie poster'} /> : <div className="image-placeholder p-4 bg-secondary text-light">No image</div>}
-                        </Nav.Link>
-                        <Carousel.Caption>
-                            <h3>{movie.title}</h3>
-                            {movie.avgRating != null && <><BsStarFill /> {formatAvg(movie.avgRating)} &nbsp;&nbsp;</>}{movie.releaseDate}
-                        </Carousel.Caption>
+                        <div className="d-flex flex-column align-items-center justify-content-center text-center">
+                            <Link
+                                to={`/movie/${movie._id}`}
+                                onClick={() => handleClick(movie)}
+                                className="d-inline-block text-decoration-none"
+                            >
+                                {movie.imageUrl ? (
+                                    <img
+                                        className="movie-carousel-poster"
+                                        src={movie.imageUrl}
+                                        alt={movie.title || 'Movie poster'}
+                                        referrerPolicy="no-referrer"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = POSTER_FALLBACK;
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="movie-carousel-poster d-flex align-items-center justify-content-center bg-secondary text-light px-4">
+                                        No poster
+                                    </div>
+                                )}
+                            </Link>
+                            <div className="movie-carousel-meta text-light">
+                                <h3 className="h4 mb-1">{movie.title}</h3>
+                                <div className="small">
+                                    {movie.avgRating != null && (
+                                        <>
+                                            <BsStarFill className="text-warning" /> {formatAvg(movie.avgRating)}
+                                            {' · '}
+                                        </>
+                                    )}
+                                    {movie.releaseDate}
+                                </div>
+                                <div className="mt-2">
+                                    <Button as={Link} to={`/movie/${movie._id}`} variant="outline-light" size="sm" onClick={() => handleClick(movie)}>
+                                        Open detail
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
                     </Carousel.Item>
                 ))}
             </Carousel>
