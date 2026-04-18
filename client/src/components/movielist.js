@@ -77,7 +77,7 @@ function MovieList() {
                         <Col key={movie._id}>
                             <Card className="h-100 bg-dark text-light">
                                 {movie.imageUrl
-                                    ? <Card.Img variant="top" src={movie.imageUrl} style={{ objectFit: 'cover', maxHeight: '220px' }} />
+                                    ? <Card.Img variant="top" src={movie.imageUrl} referrerPolicy="no-referrer" style={{ objectFit: 'cover', maxHeight: '220px' }} />
                                     : <div className="bg-secondary p-5 text-center">No image</div>}
                                 <Card.Body>
                                     <Card.Title>{movie.title}</Card.Title>
@@ -116,7 +116,7 @@ function MovieList() {
                             to={`/movie/${movie._id}`}
                             onClick={() => handleClick(movie)}
                         >
-                            {movie.imageUrl ? <Image className="image" src={movie.imageUrl} thumbnail /> : <div className="image-placeholder p-4 bg-secondary text-light">No image</div>}
+                            {movie.imageUrl ? <Image className="image" src={movie.imageUrl} referrerPolicy="no-referrer" thumbnail alt={movie.title || 'Movie poster'} /> : <div className="image-placeholder p-4 bg-secondary text-light">No image</div>}
                         </Nav.Link>
                         <Carousel.Caption>
                             <h3>{movie.title}</h3>

@@ -77,10 +77,15 @@
   border-bottom: 2px solid #007bff; /* blue underline for active tab */
 }
 
+/* Poster thumbnails (carousel + detail). Avoid huge fixed heights — they break layout and look like broken images. */
 .image {
-  height: 800px;      /* Set a consistent height */
-  width: auto;        /* Width adjusts to maintain aspect ratio */
-  object-fit: contain; /* Ensures the image scales to fit without cropping */
+  max-height: min(65vh, 420px);
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @keyframes App-logo-spin {

@@ -59,7 +59,7 @@ const movieDocs = [
     title: 'The Dark Knight',
     releaseDate: 2008,
     genre: 'Action',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/8/8a/Dark_Knight.jpg',
+    imageUrl: 'https://upload.wikimedia.org/wikipedia/en/1/1c/The_Dark_Knight_%282008_film%29.jpg',
     actors: [
       { actorName: 'Christian Bale', characterName: 'Bruce Wayne' },
       { actorName: 'Heath Ledger', characterName: 'Joker' },

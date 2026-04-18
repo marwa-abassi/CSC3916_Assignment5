@@ -56,37 +56,46 @@ const MovieDetail = () => {
 
   const DetailInfo = () => {
     if (loading) {
-      return <div>Loading....</div>;
+      return <div className="p-3 text-light">Loading…</div>;
     }
 
     if (error) {
-      return <div>Error: {error}</div>;
+      return <div className="p-3 text-warning">Error: {error}</div>;
     }
 
     if (!selectedMovie) {
-      return <div>No movie data available.</div>;
+      return <div className="p-3 text-light">No movie data available.</div>;
     }
 
     return (
       <Card className="bg-dark text-light p-4 rounded">
-        <Card.Header className="text-dark">Movie Detail</Card.Header>
-        <Card.Body>
-          {selectedMovie.imageUrl && <Image className="image" src={selectedMovie.imageUrl} thumbnail alt={selectedMovie.title} />}
+        <Card.Header className="bg-secondary text-white fw-semibold border-0">Movie detail</Card.Header>
+        <Card.Body className="bg-dark">
+          {selectedMovie.imageUrl && (
+            <Image
+              className="image"
+              src={selectedMovie.imageUrl}
+              referrerPolicy="no-referrer"
+              thumbnail
+              alt={selectedMovie.title}
+            />
+          )}
         </Card.Body>
-        <ListGroup>
-          <ListGroupItem>{selectedMovie.title}</ListGroupItem>
-          <ListGroupItem>{selectedMovie.releaseDate && <span>Year: {selectedMovie.releaseDate}</span>}</ListGroupItem>
-          <ListGroupItem>{selectedMovie.genre && <span>Genre: {selectedMovie.genre}</span>}</ListGroupItem>
-          <ListGroupItem>
+        {/* ListGroup defaults to light background; do not inherit text-light from Card or text is invisible */}
+        <ListGroup variant="flush" className="border-secondary">
+          <ListGroupItem className="bg-light text-dark">{selectedMovie.title}</ListGroupItem>
+          <ListGroupItem className="bg-light text-dark">{selectedMovie.releaseDate && <span>Year: {selectedMovie.releaseDate}</span>}</ListGroupItem>
+          <ListGroupItem className="bg-light text-dark">{selectedMovie.genre && <span>Genre: {selectedMovie.genre}</span>}</ListGroupItem>
+          <ListGroupItem className="bg-light text-dark">
             {selectedMovie.actors && selectedMovie.actors.length > 0 ? selectedMovie.actors.map((actor, i) => (
-              <p key={i} className="mb-1">
+              <p key={i} className="mb-1 text-dark">
                 <b>{actor.actorName}</b> — {actor.characterName}
               </p>
             )) : null}
           </ListGroupItem>
           {selectedMovie.avgRating != null && !Number.isNaN(Number(selectedMovie.avgRating)) && (
-            <ListGroupItem>
-              <h4 className="mb-0">
+            <ListGroupItem className="bg-light text-dark">
+              <h4 className="mb-0 text-dark">
                 Average rating <BsStarFill /> {formatAvg(selectedMovie.avgRating)}
               </h4>
             </ListGroupItem>
@@ -94,11 +103,11 @@ const MovieDetail = () => {
         </ListGroup>
 
         {loggedIn && (
-          <Card.Body className="border-top border-secondary">
+          <Card.Body className="border-top border-secondary bg-dark">
             <h5 className="text-light">Add a review</h5>
             <Form onSubmit={onSubmitReview}>
               <Form.Group className="mb-2" controlId="rating">
-                <Form.Label>Rating (0–5)</Form.Label>
+                <Form.Label className="text-light">Rating (0–5)</Form.Label>
                 <Form.Select value={rating} onChange={(e) => setRating(e.target.value)}>
                   {[0, 1, 2, 3, 4, 5].map((n) => (
                     <option key={n} value={String(n)}>{n}</option>
@@ -106,7 +115,7 @@ const MovieDetail = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-2" controlId="review">
-                <Form.Label>Comment</Form.Label>
+                <Form.Label className="text-light">Comment</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
